@@ -9,7 +9,7 @@ logger = logging.getLogger()
 
 # Environment variables (set in GitHub Actions secrets)
 CLOUDFLARE_API_TOKEN = os.getenv("CLOUDFLARE_API_TOKEN")
-ZONE_ID = os.getenv("CLOUDFLARE_ZONE_ID")
+ACCOUNT_ID = os.getenv("CLOUDFLARE_ACCOUNT_ID")
 ACCESS_GROUP_ID = os.getenv("CLOUDFLARE_ACCESS_GROUP_ID")
 DOMAIN = os.getenv("DOMAIN")
 
@@ -23,9 +23,9 @@ def get_domain_ip(domain):
         logger.error(f"Failed to resolve IP for {domain}: {e}")
         raise
 
-def update_cloudflare_access_group(zone_id, group_id, ip):
+def update_cloudflare_access_group(account_id, group_id, ip):
     """Update the Cloudflare Access group with the new IP."""
-    url = f"https://api.cloudflare.com/client/v4/zones/{zone_id}/access/groups/{group_id}"
+    url = f"https://api.cloudflare.com/client/v4/accounts/{account_id}/access/groups/{group_id}"
     headers = {
         "Authorization": f"Bearer {CLOUDFLARE_API_TOKEN}",
         "Content-Type": "application/json",
@@ -57,7 +57,7 @@ def main():
     domain_ip = get_domain_ip(DOMAIN)
     
     # Update the Cloudflare Access group
-    update_cloudflare_access_group(ZONE_ID, ACCESS_GROUP_ID, domain_ip)
+    update_cloudflare_access_group(ACCOUNT_ID, ACCESS_GROUP_ID, domain_ip)
     
     logger.info("Script completed successfully.")
 
